@@ -15,7 +15,7 @@
 
 ## Descripción del proyecto y su funcionalidad
 
-- Este proyecto consta de la creación de una página web en donde se muestran las diferentes fotografías y sitios que un explorador ha recorrido alrededor de los EE.UU. El propósito principal de su creación fue el de aprender a utilizar JavaScript para hacer que la pagina sea responsiva y funcionen diferentes elementos. Los elementos que son funcionales son el botón de edición para que se desplace una ventana emergente en la que puedas editar el nombre y la profesión del perfil, cerrar la ventana emergente o guardar los cambios realizados con el botón save.
+- Este proyecto consta de la creación de una página web en donde se muestran las diferentes fotografías y sitios que un explorador ha recorrido alrededor de los EE.UU. El propósito principal de su creación fue el de aprender a utilizar JavaScript para hacer que la pagina sea responsiva y funcionen diferentes elementos. Los elementos que son funcionales son el botón de edición para que se desplace una ventana emergente en la que puedas editar el nombre y la profesión del perfil, cerrar la ventana emergente o guardar los cambios realizados con el botón save. El botón de agregar para que puedas agregar más imágenes, así como sus respectivos títulos, el botón de me gusta cambia de color cuando le das click y las imágenes se eliminan cuando le das click al botón de eliminar. De igual manera aparece una ventana emergente que puedes cerrar con un botón cuando le das click a cualquiera de las imágenes y muestra la imagen en grande, así como su respectivo título.
 
 - El diseño utilizado fue el siguiente de Figma:
 
