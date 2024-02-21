@@ -70,6 +70,7 @@ function setPopupInput() {
 
 function openPopup() {
   editPopupElement.classList.add("popup_opened");
+  closeButtonPopup.addEventListener("click", closePopup);
 }
 
 function handlePopupClick(event) {
@@ -119,6 +120,7 @@ function cardGenerator(title, link) {
   const deleteButton = card.querySelector(".card__delete-button");
   cardImage.src = link;
   cardTitle.textContent = title;
+  cardImage.alt = title;
   likeButton.addEventListener("click", function () {
     likeButton.classList.toggle("card__like-button_active");
   });
@@ -148,6 +150,7 @@ function handleOpenImage(title, link) {
   popupImage.src = link;
   popupImageTitle.textContent = title;
   popupImageOpen.classList.add("popup_opened");
+  closeImage.addEventListener("click", handleCloseImage);
 }
 
 function handleCloseImage() {
@@ -156,12 +159,10 @@ function handleCloseImage() {
 
 //Eventos abrir y cerrar
 profileEditButton.addEventListener("click", handlePopupClick);
-closeButtonPopup.addEventListener("click", closePopup);
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
 profileAddButton.addEventListener("click", handleAddImageClick);
 formCard.addEventListener("submit", handleAddCardSubmit);
-closeImage.addEventListener("click", handleCloseImage);
 
 addImagePopupElement
   .querySelector(".popup__close-button")
