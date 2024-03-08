@@ -1,7 +1,3 @@
-//import { enableValidation } from "./validate.js";
-
-const page = document.querySelector(".page");
-
 //Popup editar perfil
 const profileNameElement = document.querySelector(".profile__name");
 const profileAboutElement = document.querySelector(".profile__about");
@@ -80,7 +76,6 @@ function setPopupInput() {
 function openPopup() {
   editPopupElement.classList.add("popup_opened");
   overlayEdit.addEventListener("click", handleOverlayClick);
-  document.addEventListener("keydown", closeWithEsc);
 }
 
 function handlePopupClick(event) {
@@ -91,7 +86,6 @@ function handlePopupClick(event) {
 function closePopup() {
   editPopupElement.classList.remove("popup_opened");
   overlayEdit.removeEventListener("click", handleOverlayClick);
-  document.removeEventListener("keydown", closeWithEsc);
 }
 
 function handleProfileFormSubmit(evt) {
@@ -107,7 +101,6 @@ function handleProfileFormSubmit(evt) {
 function openAddImagePopup() {
   addImagePopupElement.classList.add("popup_opened");
   overlayAdd.addEventListener("click", handleOverlayClick);
-  document.addEventListener("keydown", closeWithEsc);
 }
 
 function handleAddImageClick(event) {
@@ -117,7 +110,6 @@ function handleAddImageClick(event) {
 function closeAddImagePopup() {
   addImagePopupElement.classList.remove("popup_opened");
   overlayAdd.removeEventListener("click", handleOverlayClick);
-  document.removeEventListener("keydown", closeWithEsc);
 }
 
 function handleAddImageFormSubmit(evt) {
@@ -164,6 +156,11 @@ function handleAddCardSubmit(evt) {
 }
 
 //Popup imagenes
+function handleCloseImage() {
+  popupImageOpen.classList.remove("popup_opened");
+  overlayImage.removeEventListener("click", handleOverlayClick);
+}
+
 function handleOpenImage(title, link) {
   popupImage.src = link;
   popupImageTitle.textContent = title;
@@ -172,14 +169,9 @@ function handleOpenImage(title, link) {
   overlayImage.addEventListener("click", handleOverlayClick);
 }
 
-function handleCloseImage() {
-  popupImageOpen.classList.remove("popup_opened");
-  overlayImage.removeEventListener("click", handleOverlayClick);
-}
-
 //Overlays
 function handleOverlayClick(event) {
-  if (event.target.classList.contains(".popup__overlay")) {
+  if (event.target.classList.contains("popup__overlay")) {
     closePopup();
     closeAddImagePopup();
     handleCloseImage();
@@ -187,11 +179,10 @@ function handleOverlayClick(event) {
 }
 
 function closeWithEsc(event) {
-  console.log("closeWithEsc called");
   if (event.key === "Escape") {
     closePopup();
-    closeAddImagePopup(); // Close add image popup as well
-    handleCloseImage(); // Close image popup as well
+    closeAddImagePopup();
+    handleCloseImage();
   }
 }
 

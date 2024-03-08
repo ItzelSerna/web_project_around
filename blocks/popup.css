@@ -155,6 +155,7 @@
 .popup__button_disabled {
   background-color: white;
   color: #cccccc;
+  pointer-events: none;
 }
 
 .popup__overlay {
@@ -171,6 +172,10 @@
     padding: 25px 22px;
     width: 238px;
   }
+  .popup__form {
+    margin-left: 0px;
+  }
+
   .popup__close-button {
     width: 26px;
     height: 26px;
