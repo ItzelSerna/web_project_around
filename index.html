@@ -40,59 +40,62 @@
       <footer class="footer">&copy; 2024. Itzel Serna</footer>
       <!-----------POPUP EDITAR PERFIL--------------->
       <section class="popup" id="edit-profile-popup">
+        <div class="popup__overlay" id="popup-overlay-edit"></div>
         <div class="popup__container" id="popup-edit">
-          <button class="popup__close-button"></button>
-          <form class="popup__form" id="edit-profile-popup__form">
+          <form class="popup__form" novalidate>
+            <button class="popup__close-button"></button>
             <h2 class="popup__title">Edit profile</h2>
             <input
               class="popup__input popup__input_name"
               type="text"
-              id="input-name-popup"
-              required
+              id="popup__input_name"
               minlength="2"
               maxlength="40"
               placeholder="Name"
+              required
             />
+            <span class="popup__error popup__input_name-error"></span>
             <p></p>
             <input
               class="popup__input popup__input_about"
               type="text"
-              id="input-about-popup"
-              required
+              id="popup__input_about"
               minlength="2"
-              maxlength="40"
+              maxlength="200"
               placeholder="Profession"
+              required
             />
-            <p></p>
+            <span class="popup__error popup__input_about-error"></span>
             <button class="popup__save-button" type="submit">Save</button>
           </form>
         </div>
       </section>
       <!-----------POPUP AGREGAR IMAGENES--------------->
       <section class="popup" id="add-image-popup">
+        <div class="popup__overlay" id="popup-overlay-add"></div>
         <div class="popup__container" id="popup-add">
-          <button class="popup__close-button"></button>
-          <form class="popup__form" id="add-image-popup__form">
+          <form class="popup__form" novalidate>
+            <button class="popup__close-button"></button>
             <h2 class="popup__title">New place</h2>
             <input
-              class="popup__input popup__input_name"
+              class="popup__input popup__input_title"
               type="text"
-              id="input-title-popup"
-              required
+              id="popup__input_title"
               minlength="2"
-              maxlength="40"
+              maxlength="30"
               placeholder="Title"
+              required
             />
-            <p></p>
+            <span class="popup__error popup__input_title-error"></span>
             <input
               class="popup__input popup__input_about"
-              type="text"
-              id="input-image-popup"
-              required
+              type="url"
+              id="popup__input_image"
               minlength="2"
               placeholder="Image URL"
+              required
             />
-            <p></p>
+            <span class="popup__error popup__input_image-error"></span>
             <button class="popup__save-button" type="submit">Create</button>
           </form>
         </div>
@@ -110,6 +113,7 @@
       </template>
       <!-----------POPUP IMAGES--------------->
       <div class="popup" id="popup_image-open">
+        <div class="popup__overlay" id="popup-overlay-image"></div>
         <div class="popup__content-image">
           <button class="popup__close-button-image"></button>
           <img class="popup__image" src="." alt="" />
@@ -118,5 +122,6 @@
       </div>
     </div>
     <script src="./script/script.js"></script>
+    <script src="./script/validate.js"></script>
   </body>
 </html>
