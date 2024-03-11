@@ -164,6 +164,7 @@ function handleCloseImage() {
 function handleOpenImage(title, link) {
   popupImage.src = link;
   popupImageTitle.textContent = title;
+  popupImage.alt = title;
   popupImageOpen.classList.add("popup_opened");
   closeImage.addEventListener("click", handleCloseImage);
   overlayImage.addEventListener("click", handleOverlayClick);
