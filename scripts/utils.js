@@ -1,3 +1,6 @@
+//contiene los controladores de eventos
+//y la función que abre/cierra las ventanas modales
+
 export function openPopup(editPopupElement, overlayEdit, setPopupInput) {
   editPopupElement.classList.add("popup_opened");
   overlayEdit.addEventListener("click", handleOverlayClick);
