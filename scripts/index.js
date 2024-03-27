@@ -1,28 +1,32 @@
-//Popup editar perfil
+//Contiene controladores de eventos y la función que abre/cierra las ventanas modales
+//abrir modales o abrir popups
+//setpopupinput, openpopup
+
+import Card from "./Card.js";
+import FormValidator from "./FormValidator.js";
+import {
+  openPopup,
+  closePopup,
+  openAddImagePopup,
+  closeAddImagePopup,
+} from "./utils.js";
+
 const profileNameElement = document.querySelector(".profile__name");
 const profileAboutElement = document.querySelector(".profile__about");
-
-const profileName = profileNameElement.textContent;
-const profileAbout = profileAboutElement.textContent;
-
 const profileEditButton = document.querySelector(".profile__edit-button");
 const editPopupElement = document.querySelector(".popup");
-
 const formElement = document.querySelector(".popup__form");
 const nameInput = document.querySelector(".popup__input_name");
 const aboutInput = document.querySelector(".popup__input_about");
 const closeButtonPopup = document.querySelector(".popup__close-button");
 
-//Popup agregar imagenes
 const profileAddButton = document.querySelector(".profile__add-button");
 const addImagePopupElement = document.querySelector("#add-image-popup");
 const titleInput = document.querySelector(".popup__input_title");
 const imageInput = document.querySelector("#popup__input_image");
 
-//Template cards
 const templateCard = document.querySelector(".template-card");
 const cardArea = document.querySelector(".cards");
-
 const groupImage = document.getElementById("add-image-popup");
 const formCard = groupImage.querySelector(".popup__form");
 
@@ -53,39 +57,21 @@ const initialCards = [
   },
 ];
 
-//Popup imagenes
 const popupImageOpen = document.querySelector("#popup_image-open");
 const closeImage = document.querySelector("#popup__close-image");
 const popupImageTitle = document.querySelector(".popup__image-title");
 const popupImage = document.querySelector(".popup__image");
 
-let initialProfileName = profileName;
-let initialProfileAbout = profileAbout;
-
-//Overlays
 const overlayEdit = document.querySelector("#popup-overlay-edit");
 const overlayAdd = document.querySelector("#popup-overlay-add");
 const overlayImage = document.querySelector("#popup-overlay-image");
 
-//Popup editar perfil
+let initialProfileName = profileNameElement.textContent;
+let initialProfileAbout = profileAboutElement.textContent;
+
 function setPopupInput() {
   nameInput.value = initialProfileName;
   aboutInput.value = initialProfileAbout;
-}
-
-function openPopup() {
-  editPopupElement.classList.add("popup_opened");
-  overlayEdit.addEventListener("click", handleOverlayClick);
-}
-
-function handlePopupClick(event) {
-  setPopupInput();
-  openPopup();
-}
-
-function closePopup() {
-  editPopupElement.classList.remove("popup_opened");
-  overlayEdit.removeEventListener("click", handleOverlayClick);
 }
 
 function handleProfileFormSubmit(evt) {
@@ -94,32 +80,16 @@ function handleProfileFormSubmit(evt) {
   profileAboutElement.textContent = aboutInput.value;
   initialProfileName = nameInput.value;
   initialProfileAbout = aboutInput.value;
-  closePopup();
-}
-
-//Popup agregar imagenes
-function openAddImagePopup() {
-  addImagePopupElement.classList.add("popup_opened");
-  overlayAdd.addEventListener("click", handleOverlayClick);
-}
-
-function handleAddImageClick(event) {
-  openAddImagePopup();
-}
-
-function closeAddImagePopup() {
-  addImagePopupElement.classList.remove("popup_opened");
-  overlayAdd.removeEventListener("click", handleOverlayClick);
+  closePopup(editPopupElement, overlayEdit);
 }
 
 function handleAddImageFormSubmit(evt) {
   evt.preventDefault();
   const newImageTitle = titleInput.value;
   const newImageUrl = imageInput.value;
-  closeAddImagePopup();
+  closeAddImagePopup(addImagePopupElement, overlayAdd);
 }
 
-//Template cards
 function cardGenerator(title, link) {
   const card = templateCard.cloneNode(true).content.querySelector(".card");
   const cardImage = card.querySelector(".card__photo");
@@ -152,10 +122,9 @@ function handleAddCardSubmit(evt) {
     const newCard = cardGenerator(titleInput.value, imageInput.value);
     cardArea.prepend(newCard);
   }
-  closeAddImagePopup();
+  closeAddImagePopup(addImagePopupElement, overlayAdd);
 }
 
-//Popup imagenes
 function handleCloseImage() {
   popupImageOpen.classList.remove("popup_opened");
   overlayImage.removeEventListener("click", handleOverlayClick);
@@ -170,39 +139,55 @@ function handleOpenImage(title, link) {
   overlayImage.addEventListener("click", handleOverlayClick);
 }
 
-//Overlays
 function handleOverlayClick(event) {
   if (event.target.classList.contains("popup__overlay")) {
-    closePopup();
-    closeAddImagePopup();
+    closePopup(editPopupElement, overlayEdit);
+    closeAddImagePopup(addImagePopupElement, overlayAdd);
     handleCloseImage();
   }
 }
 
 function closeWithEsc(event) {
   if (event.key === "Escape") {
-    closePopup();
-    closeAddImagePopup();
+    closePopup(editPopupElement, overlayEdit);
+    closeAddImagePopup(addImagePopupElement, overlayAdd);
     handleCloseImage();
   }
 }
 
-//Eventos abrir y cerrar
-profileEditButton.addEventListener("click", handlePopupClick);
+profileEditButton.addEventListener("click", () =>
+  openPopup(editPopupElement, overlayEdit, setPopupInput)
+);
+
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
-profileAddButton.addEventListener("click", handleAddImageClick);
+profileAddButton.addEventListener("click", () =>
+  openAddImagePopup(addImagePopupElement, overlayAdd)
+);
 formCard.addEventListener("submit", handleAddCardSubmit);
 
 addImagePopupElement
   .querySelector(".popup__close-button")
-  .addEventListener("click", closeAddImagePopup);
+  .addEventListener("click", () =>
+    closeAddImagePopup(addImagePopupElement, overlayAdd)
+  );
 addImagePopupElement
   .querySelector(".popup__form")
   .addEventListener("submit", handleAddImageFormSubmit);
 
-// Event listeners for overlay clicks
 overlayEdit.addEventListener("click", handleOverlayClick);
 overlayAdd.addEventListener("click", handleOverlayClick);
 overlayImage.addEventListener("click", handleOverlayClick);
 document.addEventListener("keydown", closeWithEsc);
+
+const settings = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__save-button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
+const validateForm = new FormValidator(formElement, settings);
+validateForm._setEventListeners();
