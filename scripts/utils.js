@@ -33,12 +33,14 @@ export function handleOverlayClick(event) {
   }
 }
 
-export function closeWithEsc(event) {
+export function closeWithEsc(
+  event,
+  editPopupElement,
+  overlayEdit,
+  addImagePopupElement,
+  overlayAdd
+) {
   if (event.key === "Escape") {
-    const editPopupElement = document.querySelector(".popup");
-    const addImagePopupElement = document.querySelector("#add-image-popup");
-    const overlayEdit = document.querySelector("#popup-overlay-edit");
-    const overlayAdd = document.querySelector("#popup-overlay-add");
     closePopup(editPopupElement, overlayEdit);
     closeAddImagePopup(addImagePopupElement, overlayAdd);
   }

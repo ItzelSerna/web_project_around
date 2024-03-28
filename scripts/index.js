@@ -25,7 +25,6 @@ const addImagePopupElement = document.querySelector("#add-image-popup");
 const titleInput = document.querySelector(".popup__input_title");
 const imageInput = document.querySelector("#popup__input_image");
 
-const templateCard = document.querySelector(".template-card");
 const cardArea = document.querySelector(".cards");
 const groupImage = document.getElementById("add-image-popup");
 const formCard = groupImage.querySelector(".popup__form");
@@ -58,9 +57,6 @@ const initialCards = [
 ];
 
 const popupImageOpen = document.querySelector("#popup_image-open");
-const closeImage = document.querySelector("#popup__close-image");
-const popupImageTitle = document.querySelector(".popup__image-title");
-const popupImage = document.querySelector(".popup__image");
 
 const overlayEdit = document.querySelector("#popup-overlay-edit");
 const overlayAdd = document.querySelector("#popup-overlay-add");
@@ -125,6 +121,7 @@ function closeWithEsc(event) {
     closePopup(editPopupElement, overlayEdit);
     closeAddImagePopup(addImagePopupElement, overlayAdd);
     handleCloseImage();
+    document.removeEventListener("keydown", closeWithEsc);
   }
 }
 
@@ -152,7 +149,16 @@ addImagePopupElement
 overlayEdit.addEventListener("click", handleOverlayClick);
 overlayAdd.addEventListener("click", handleOverlayClick);
 overlayImage.addEventListener("click", handleOverlayClick);
-document.addEventListener("keydown", closeWithEsc);
+
+document.addEventListener("keydown", (event) =>
+  closeWithEsc(
+    event,
+    editPopupElement,
+    overlayEdit,
+    addImagePopupElement,
+    overlayAdd
+  )
+);
 
 const settings = {
   formSelector: ".popup__form",
