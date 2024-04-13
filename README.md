@@ -4,17 +4,19 @@
 
 ## Tecnologías y técnicas utilizadas
 
-- Diseño responsivo
+- Media Queries para el diseño responsivo
 - Figma
 - HTML
 - CSS
-- JavaScript
+- JavaScript (Manejo del DOM).
 - GIT avanzado
 - Metodología BEM
 - Grid
-- Manejo de objetos y eventos en JS
 - Validación de formularios
 - Refactorización
+- POO
+- Javascript modular
+- Webpack.
 
 ## Descripción del proyecto y su funcionalidad
 

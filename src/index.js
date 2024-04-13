@@ -2,15 +2,19 @@
 //abrir modales o abrir popups
 //setpopupinput, openpopup
 
-import Card from "./Card.js";
-import FormValidator from "./FormValidator.js";
+import "./styles/index.css";
+import stepsSrc from "./images/avatar.jpg";
+import Card from "./scripts/Card.js";
+import FormValidator from "./scripts/FormValidator.js";
 import {
   openPopup,
   closePopup,
   openAddImagePopup,
   closeAddImagePopup,
-} from "./utils.js";
+} from "./scripts/utils.js";
 
+const imageProfile = document.getElementById("profile-avatar");
+imageProfile.src = stepsSrc;
 const profileNameElement = document.querySelector(".profile__name");
 const profileAboutElement = document.querySelector(".profile__about");
 const profileEditButton = document.querySelector(".profile__edit-button");
@@ -173,3 +177,5 @@ const validateFormProfile = new FormValidator(formElement, settings);
 validateFormProfile._setEventListeners();
 const validateFormCard = new FormValidator(formElementCard, settings);
 validateFormCard._setEventListeners();
+
+let someStr = "Programé. Guardé. Empaqueté.";

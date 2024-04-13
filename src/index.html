@@ -14,7 +14,7 @@
     <div class="page">
       <header class="header">
         <img
-          src="./images/logo.png"
+          src="<%=require('./images/logo.png')%>"
           alt="Around The U.S. logo"
           class="header__logo"
         />
@@ -22,7 +22,7 @@
       <main class="content">
         <section class="profile">
           <img
-            src="./images/avatar.jpg"
+            id="profile-avatar"
             alt="imagen avatar"
             class="profile__avatar"
           />
@@ -127,7 +127,5 @@
         </div>
       </div>
     </div>
-    <script src="./scripts/FormValidator.js" type="module"></script>
-    <script src="./scripts/index.js" type="module"></script>
   </body>
 </html>
