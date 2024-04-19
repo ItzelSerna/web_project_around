@@ -1,5 +1,5 @@
 export default class Card {
-  constructor(cardData, templateSelector) {
+  constructor(cardData, templateSelector, handleOpenImage) {
     this._title = cardData.name;
     this._link = cardData.link;
     this._templateSelector = templateSelector;
@@ -8,8 +8,8 @@ export default class Card {
     this._cardTitle = this._element.querySelector(".card__info-name");
     this._likeButton = this._element.querySelector(".card__like-button");
     this._deleteButton = this._element.querySelector(".card__delete-button");
-
     this._bindListeners();
+    this._handleOpenImage = handleOpenImage;
   }
 
   _getTemplate() {

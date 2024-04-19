@@ -1,17 +1,12 @@
-//Contiene controladores de eventos y la función que abre/cierra las ventanas modales
-//abrir modales o abrir popups
-//setpopupinput, openpopup
-
 import "./styles/index.css";
 import stepsSrc from "./images/avatar.jpg";
 import Card from "./scripts/Card.js";
 import FormValidator from "./scripts/FormValidator.js";
-import {
-  openPopup,
-  closePopup,
-  openAddImagePopup,
-  closeAddImagePopup,
-} from "./scripts/utils.js";
+import Section from "./scripts/Section.js";
+import Popup from "./scripts/Popup.js";
+import PopupWithForm from "./scripts/PopupWithForm.js";
+import PopupWithImage from "./scripts/PopupWithImage.js";
+import UserInfo from "./scripts/UserInfo.js";
 
 const imageProfile = document.getElementById("profile-avatar");
 imageProfile.src = stepsSrc;
@@ -25,7 +20,6 @@ const nameInput = document.querySelector(".popup__input_name");
 const aboutInput = document.querySelector(".popup__input_about");
 
 const profileAddButton = document.querySelector(".profile__add-button");
-const addImagePopupElement = document.querySelector("#add-image-popup");
 const titleInput = document.querySelector(".popup__input_title");
 const imageInput = document.querySelector("#popup__input_image");
 
@@ -60,109 +54,114 @@ const initialCards = [
   },
 ];
 
-const popupImageOpen = document.querySelector("#popup_image-open");
+const userInfo = new UserInfo(
+  {
+    nameSelector: profileNameElement,
+    jobSelector: profileAboutElement,
+  },
+  editPopupElement
+);
+
+function setUserInfo() {
+  const { name, job } = userInfo.getUserInfo();
+  nameInput.value = name;
+  aboutInput.value = job;
+}
+
+const section = new Section(
+  {
+    items: initialCards,
+    renderer: (item) => {
+      const card = new Card(item, ".template-card");
+      const cardElement = card.generateCard();
+      section.addItem(cardElement);
+    },
+  },
+  cardArea
+);
+
+section.render();
+
+const editPopup = new Popup(".popup");
+
+const addImagePopup = new PopupWithForm(
+  "#add-image-popup",
+  handleAddImageFormSubmit
+);
+
+const editProfilePopup = new PopupWithForm(".popup", handleProfileFormSubmit);
+
+const imagePopup = new PopupWithImage("#popup_image-open");
 
 const overlayEdit = document.querySelector("#popup-overlay-edit");
 const overlayAdd = document.querySelector("#popup-overlay-add");
 const overlayImage = document.querySelector("#popup-overlay-image");
 
-let initialProfileName = profileNameElement.textContent;
-let initialProfileAbout = profileAboutElement.textContent;
-
-function setPopupInput() {
-  nameInput.value = initialProfileName;
-  aboutInput.value = initialProfileAbout;
-}
-
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-  profileNameElement.textContent = nameInput.value;
-  profileAboutElement.textContent = aboutInput.value;
-  initialProfileName = nameInput.value;
-  initialProfileAbout = aboutInput.value;
-  closePopup(editPopupElement, overlayEdit);
+  userInfo.setUserInfo();
+  editProfilePopup.close();
 }
 
 function handleAddImageFormSubmit(evt) {
   evt.preventDefault();
-  closeAddImagePopup(addImagePopupElement, overlayAdd);
+  addImagePopup.close();
 }
-
-initialCards.forEach((cardData) => {
-  const card = new Card(cardData, ".template-card");
-  const cardElement = card.generateCard();
-  cardArea.append(cardElement);
-});
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
-  if (evt.submitter.classList.contains("popup__save-button")) {
+  if (titleInput.value && imageInput.value) {
     const card = new Card(
       { name: titleInput.value, link: imageInput.value },
       ".template-card"
     );
     const newCardElement = card.generateCard();
     cardArea.prepend(newCardElement);
+    titleInput.value = "";
+    imageInput.value = "";
+    addImagePopup.close();
   }
-  closeAddImagePopup(addImagePopupElement, overlayAdd);
-}
-
-function handleCloseImage() {
-  popupImageOpen.classList.remove("popup_opened");
-  overlayImage.removeEventListener("click", handleOverlayClick);
 }
 
 function handleOverlayClick(event) {
   if (event.target.classList.contains("popup__overlay")) {
-    closePopup(editPopupElement, overlayEdit);
-    closeAddImagePopup(addImagePopupElement, overlayAdd);
-    handleCloseImage();
+    editPopup.close();
+    addImagePopup.close();
+    imagePopup.close();
   }
+}
+
+function closePopups() {
+  editPopup.close();
+  addImagePopup.close();
+  imagePopup.close();
+  document.removeEventListener("keydown", closeWithEsc);
 }
 
 function closeWithEsc(event) {
   if (event.key === "Escape") {
-    closePopup(editPopupElement, overlayEdit);
-    closeAddImagePopup(addImagePopupElement, overlayAdd);
-    handleCloseImage();
-    document.removeEventListener("keydown", closeWithEsc);
+    closePopups();
   }
 }
 
-profileEditButton.addEventListener("click", () =>
-  openPopup(editPopupElement, overlayEdit, setPopupInput)
-);
+profileEditButton.addEventListener("click", () => {
+  editPopup.open();
+  setUserInfo();
+});
 
 formElement.addEventListener("submit", handleProfileFormSubmit);
 
-profileAddButton.addEventListener("click", () =>
-  openAddImagePopup(addImagePopupElement, overlayAdd)
-);
+profileAddButton.addEventListener("click", () => addImagePopup.open());
 
 formCard.addEventListener("submit", handleAddCardSubmit);
 
-addImagePopupElement
-  .querySelector(".popup__close-button")
-  .addEventListener("click", () =>
-    closeAddImagePopup(addImagePopupElement, overlayAdd)
-  );
-addImagePopupElement
-  .querySelector(".popup__form")
-  .addEventListener("submit", handleAddImageFormSubmit);
+addImagePopup.setEventListeners();
 
 overlayEdit.addEventListener("click", handleOverlayClick);
 overlayAdd.addEventListener("click", handleOverlayClick);
 overlayImage.addEventListener("click", handleOverlayClick);
 
-document.addEventListener("keydown", (event) =>
-  closeWithEsc(
-    event,
-    editPopupElement,
-    overlayEdit,
-    addImagePopupElement,
-    overlayAdd
-  )
-);
+document.addEventListener("keydown", (event) => closeWithEsc(event));
 
 const settings = {
   formSelector: ".popup__form",
@@ -177,5 +176,3 @@ const validateFormProfile = new FormValidator(formElement, settings);
 validateFormProfile._setEventListeners();
 const validateFormCard = new FormValidator(formElementCard, settings);
 validateFormCard._setEventListeners();
-
-let someStr = "Programé. Guardé. Empaqueté.";
