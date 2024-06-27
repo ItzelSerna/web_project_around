@@ -167,6 +167,40 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+.popup-confirm {
+  height: 181px;
+  width: 430px;
+  position: absolute;
+}
+
+.popup__close-button-confirmation {
+  background: url(../images/CloseIcon.svg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  border: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 24px;
+  position: absolute;
+  right: -15px;
+  top: -28px;
+  width: 24px;
+}
+
+.popup__title-confirmation {
+  color: #000;
+  font-family: Inter, sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 30px;
+  margin-bottom: 24px;
+  margin-left: 34px;
+  text-align: left;
+}
+
+.popup__confirm-button {
+}
+
 @media screen and (max-width: 768px) {
   .popup__container {
     padding: 25px 22px;

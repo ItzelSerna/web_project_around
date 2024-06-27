@@ -1,86 +1,84 @@
 import "./styles/index.css";
-import stepsSrc from "./images/avatar.jpg";
 import Card from "./scripts/Card.js";
 import FormValidator from "./scripts/FormValidator.js";
 import Section from "./scripts/Section.js";
 import Popup from "./scripts/Popup.js";
+import PopupWithAvatar from "./scripts/PopupWithAvatar.js";
+import PopupWithConfirmation from "./scripts/PopupWithConfirmation.js";
 import PopupWithForm from "./scripts/PopupWithForm.js";
 import PopupWithImage from "./scripts/PopupWithImage.js";
-import UserInfo from "./scripts/UserInfo.js";
+import { api } from "./utils/Api.js";
 
-const imageProfile = document.getElementById("profile-avatar");
-imageProfile.src = stepsSrc;
+const imageProfile = document.querySelector(".profile__avatar");
 const profileNameElement = document.querySelector(".profile__name");
 const profileAboutElement = document.querySelector(".profile__about");
 const profileEditButton = document.querySelector(".profile__edit-button");
-const editPopupElement = document.querySelector(".popup");
+
 const formElement = document.querySelector(".popup__form");
 const formElementCard = document.querySelector("#form-cards");
 const nameInput = document.querySelector(".popup__input_name");
 const aboutInput = document.querySelector(".popup__input_about");
-
 const profileAddButton = document.querySelector(".profile__add-button");
 const titleInput = document.querySelector(".popup__input_title");
 const imageInput = document.querySelector("#popup__input_image");
-
 const cardArea = document.querySelector(".cards");
 const groupImage = document.getElementById("add-image-popup");
 const formCard = groupImage.querySelector(".popup__form");
+const profileAvatarButton = document.querySelector(".profile__edit-icon");
+const formElementAvatar = document.querySelector("#popup-avatar__form");
+const buttonSaveAvatar = document.querySelector("#popup-avatar__button");
+const buttonSaveProfile = document.querySelector("#popup-profile__button");
+const buttonSaveCard = document.querySelector("#popup-card__button");
 
-const initialCards = [
-  {
-    name: "Montañas Rocosas",
-    link: "https://images.unsplash.com/photo-1595134816826-c569cbb602b2?q=80&w=1436&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    name: "Lago di Braies",
-    link: "https://images.unsplash.com/photo-1581520734619-86fbd0a3d083?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    name: "Yosemite",
-    link: "https://images.unsplash.com/photo-1607400371388-14ea99d7d096?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    name: "Everglades",
-    link: "https://images.unsplash.com/photo-1592947419095-4a2b4bde9161?q=80&w=1462&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    name: "Hawái",
-    link: "https://images.unsplash.com/photo-1542309174-d33b34ce6ea7?q=80&w=1376&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    name: "Lago Michigan",
-    link: "https://images.unsplash.com/photo-1562878344-85f7b6243c5f?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
-
-const userInfo = new UserInfo(
-  {
-    nameSelector: profileNameElement,
-    jobSelector: profileAboutElement,
-  },
-  editPopupElement
-);
+api.getUserInfo().then((userData) => {
+  profileNameElement.textContent = userData.name;
+  profileAboutElement.textContent = userData.about;
+  imageProfile.src = userData.avatar;
+});
 
 function setUserInfo() {
-  const { name, job } = userInfo.getUserInfo();
-  nameInput.value = name;
-  aboutInput.value = job;
+  api.getUserInfo().then((userData) => {
+    nameInput.value = userData.name;
+    aboutInput.value = userData.about;
+  });
 }
 
-const section = new Section(
-  {
-    items: initialCards,
-    renderer: (item) => {
-      const card = new Card(item, ".template-card");
-      const cardElement = card.generateCard();
-      section.addItem(cardElement);
-    },
-  },
-  cardArea
-);
+function handleProfileFormSubmit(evt) {
+  evt.preventDefault();
+  const newName = nameInput.value;
+  const newAbout = aboutInput.value;
+  buttonSaveProfile.textContent = "Saving...";
+  api.modifyUsersInfo(newName, newAbout).then((data) => {
+    profileNameElement.textContent = data.name;
+    profileAboutElement.textContent = data.about;
+    editProfilePopup.close();
+    buttonSaveProfile.textContent = "Save";
+  });
+}
 
-section.render();
+api.getUserInfo().then((userData) => {
+  const ownerId = userData._id;
+  api.getInitialCards().then((cards) => {
+    const section = new Section(
+      {
+        items: cards,
+        renderer: (item) => {
+          const card = new Card(
+            item,
+            ".template-card",
+            ownerId,
+            handleCardLike
+          );
+          const cardElement = card.generateCard();
+          section.addItem(cardElement);
+        },
+      },
+      cardArea
+    );
+
+    section.render();
+  });
+});
 
 const editPopup = new Popup(".popup");
 
@@ -93,15 +91,14 @@ const editProfilePopup = new PopupWithForm(".popup", handleProfileFormSubmit);
 
 const imagePopup = new PopupWithImage("#popup_image-open");
 
+const editAvatarPopup = new PopupWithAvatar("#popup-avatar", {
+  handleformAvatar: handleAvatarFormSubmit,
+});
+
 const overlayEdit = document.querySelector("#popup-overlay-edit");
 const overlayAdd = document.querySelector("#popup-overlay-add");
 const overlayImage = document.querySelector("#popup-overlay-image");
-
-function handleProfileFormSubmit(evt) {
-  evt.preventDefault();
-  userInfo.setUserInfo();
-  editProfilePopup.close();
-}
+const overlayAvatar = document.querySelector("#popup-overlay-avatar");
 
 function handleAddImageFormSubmit(evt) {
   evt.preventDefault();
@@ -110,17 +107,43 @@ function handleAddImageFormSubmit(evt) {
 
 function handleAddCardSubmit(evt) {
   evt.preventDefault();
+  buttonSaveCard.textContent = "Saving...";
   if (titleInput.value && imageInput.value) {
-    const card = new Card(
-      { name: titleInput.value, link: imageInput.value },
-      ".template-card"
-    );
-    const newCardElement = card.generateCard();
-    cardArea.prepend(newCardElement);
-    titleInput.value = "";
-    imageInput.value = "";
-    addImagePopup.close();
+    api.getNewCard(titleInput.value, imageInput.value).then((newCard) => {
+      const card = new Card(newCard, ".template-card");
+      const newCardElement = card.generateCard();
+      cardArea.prepend(newCardElement);
+      titleInput.value = "";
+      imageInput.value = "";
+      addImagePopup.close();
+      buttonSaveCard.textContent = "Save";
+    });
   }
+}
+
+function handleAvatarFormSubmit(evt) {
+  evt.preventDefault();
+  const newAvatarUrl = formElementAvatar.querySelector(".popup__input").value;
+  buttonSaveAvatar.textContent = "Saving...";
+  api.resetAvatar(newAvatarUrl).then((data) => {
+    imageProfile.src = data.avatar;
+    editAvatarPopup.close();
+    buttonSaveAvatar.textContent = "Save";
+  });
+}
+
+function handleCardLike(cardId, isLiked) {
+  api.likeCard(cardId, isLiked).then((data) => {
+    const cardElement = document.getElementById(cardId);
+    const likeCountElement = cardElement.querySelector(".card__like-count");
+    const likeButton = cardElement.querySelector(".card__like-button");
+    likeCountElement.textContent = data.likes.length;
+    if (data.likes.some((like) => like._id === userId)) {
+      likeButton.classList.add("card__like-button_liked");
+    } else {
+      likeButton.classList.remove("card__like-button_liked");
+    }
+  });
 }
 
 function handleOverlayClick(event) {
@@ -128,6 +151,7 @@ function handleOverlayClick(event) {
     editPopup.close();
     addImagePopup.close();
     imagePopup.close();
+    editAvatarPopup.close();
   }
 }
 
@@ -135,6 +159,7 @@ function closePopups() {
   editPopup.close();
   addImagePopup.close();
   imagePopup.close();
+  editAvatarPopup.close();
   document.removeEventListener("keydown", closeWithEsc);
 }
 
@@ -150,16 +175,17 @@ profileEditButton.addEventListener("click", () => {
 });
 
 formElement.addEventListener("submit", handleProfileFormSubmit);
-
 profileAddButton.addEventListener("click", () => addImagePopup.open());
-
 formCard.addEventListener("submit", handleAddCardSubmit);
+profileAvatarButton.addEventListener("click", () => editAvatarPopup.open());
+formElementAvatar.addEventListener("submit", handleAvatarFormSubmit);
 
 addImagePopup.setEventListeners();
 
 overlayEdit.addEventListener("click", handleOverlayClick);
 overlayAdd.addEventListener("click", handleOverlayClick);
 overlayImage.addEventListener("click", handleOverlayClick);
+overlayAvatar.addEventListener("click", handleOverlayClick);
 
 document.addEventListener("keydown", (event) => closeWithEsc(event));
 
@@ -176,3 +202,5 @@ const validateFormProfile = new FormValidator(formElement, settings);
 validateFormProfile._setEventListeners();
 const validateFormCard = new FormValidator(formElementCard, settings);
 validateFormCard._setEventListeners();
+const validateFormAvatar = new FormValidator(formElementAvatar, settings);
+validateFormAvatar._setEventListeners();

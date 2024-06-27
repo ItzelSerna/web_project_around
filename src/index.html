@@ -21,17 +21,20 @@
       </header>
       <main class="content">
         <section class="profile">
-          <img
-            id="profile-avatar"
-            alt="imagen avatar"
-            class="profile__avatar"
-          />
+          <div class="profile__avatar-container">
+            <img
+              id="profile-avatar"
+              alt="imagen avatar"
+              class="profile__avatar"
+            />
+            <button class="profile__edit-icon"></button>
+          </div>
           <div class="profile__info">
             <div class="profile__container">
-              <h1 class="profile__name">Jacques Cousteau</h1>
+              <h1 class="profile__name"></h1>
               <button class="profile__edit-button"></button>
             </div>
-            <p class="profile__about">Explorer</p>
+            <p class="profile__about"></p>
           </div>
           <button class="profile__add-button"></button>
         </section>
@@ -66,7 +69,13 @@
               required
             />
             <span class="popup__error" id="popup__input_about-error"></span>
-            <button class="popup__save-button" type="submit">Save</button>
+            <button
+              class="popup__save-button"
+              id="popup-profile__button"
+              type="submit"
+            >
+              Save
+            </button>
           </form>
         </div>
       </section>
@@ -99,21 +108,79 @@
               required
             />
             <span class="popup__error" id="popup__input_image-error"></span>
-            <button class="popup__save-button" type="submit">Create</button>
+            <button
+              class="popup__save-button"
+              id="popup-card__button"
+              type="submit"
+            >
+              Create
+            </button>
           </form>
         </div>
       </section>
-      <!-----------TEMPLATE--------------->
+      <!-----------POPUP CONFIRMACIÓN--------------->
+      <section class="popup" id="popup-confirmation">
+        <div class="popup__overlay" id="popup-overlay-confirm"></div>
+        <div class="popup__container" id="popup-confirm">
+          <form class="popup__form" novalidate id="form-confirmation">
+            <button
+              class="popup__close-button"
+              id="popup__close-button-confirmation"
+            ></button>
+            <h2 class="popup__title" id="popup__title-confirmation">
+              Are you sure?
+            </h2>
+            <button class="popup__save-button" id="popup__confirm-button">
+              Yes
+            </button>
+          </form>
+        </div>
+      </section>
+      <!-----------TEMPLATE CARDS--------------->
       <template class="template-card">
         <div class="card">
           <img class="card__photo" />
           <div class="card__info">
             <p class="card__info-name"></p>
-            <button class="card__like-button"></button>
-            <button class="card__delete-button"></button>
+            <div class="card__container-likes">
+              <button class="card__like-button"></button>
+              <button class="card__delete-button"></button>
+              <div class="card__likes"></div>
+            </div>
           </div>
         </div>
       </template>
+      <!-----------POPUP EDITAR AVATAR--------------->
+      <section class="popup" id="popup-avatar">
+        <div class="popup__overlay" id="popup-overlay-avatar"></div>
+        <div class="popup__container" id="popup-avatar__container">
+          <form class="popup__form" id="popup-avatar__form" novalidate>
+            <button
+              class="popup__close-button"
+              id="popup-avatar__close"
+            ></button>
+            <h2 class="popup__title" id="popup-avatar__title">
+              Change profile photo
+            </h2>
+            <input
+              class="popup__input popup__input_avatar"
+              type="url"
+              id="popup__input_avatar"
+              minlength="2"
+              placeholder="Avatar URL"
+              required
+            />
+            <span class="popup__error" id="popup__input_avatar-error"></span>
+            <button
+              type="submit"
+              class="popup__save-button"
+              id="popup-avatar__button"
+            >
+              Save
+            </button>
+          </form>
+        </div>
+      </section>
       <!-----------POPUP IMAGES--------------->
       <div class="popup" id="popup_image-open">
         <div class="popup__overlay" id="popup-overlay-image"></div>
