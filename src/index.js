@@ -34,6 +34,29 @@ api.getUserInfo().then((userData) => {
   profileNameElement.textContent = userData.name;
   profileAboutElement.textContent = userData.about;
   imageProfile.src = userData.avatar;
+  const ownerId = userData._id;
+
+  api.getInitialCards().then((cards) => {
+    const section = new Section(
+      {
+        items: cards,
+        renderer: (item) => {
+          const card = new Card(
+            item,
+            ".template-card",
+            ownerId,
+            handleCardLike
+            //handleCardDelete
+          );
+          const cardElement = card.generateCard();
+          section.addItem(cardElement);
+        },
+      },
+      cardArea
+    );
+
+    section.render();
+  });
 });
 
 function setUserInfo() {
@@ -135,16 +158,23 @@ function handleAvatarFormSubmit(evt) {
 function handleCardLike(cardId, isLiked) {
   api.likeCard(cardId, isLiked).then((data) => {
     const cardElement = document.getElementById(cardId);
-    const likeCountElement = cardElement.querySelector(".card__like-count");
-    const likeButton = cardElement.querySelector(".card__like-button");
-    likeCountElement.textContent = data.likes.length;
-    if (data.likes.some((like) => like._id === userId)) {
-      likeButton.classList.add("card__like-button_liked");
+    if (cardElement) {
+      const likeCountElement = cardElement.querySelector(".card__likes");
+      const likeButton = cardElement.querySelector(".card__like-button");
+      likeCountElement.textContent = data.likes.length;
+      likeButton.classList.toggle("card__like-button_active", isLiked);
     } else {
-      likeButton.classList.remove("card__like-button_liked");
+      console.error(`Card with id ${cardId} not found`);
     }
   });
 }
+
+/*function handleCardDelete(cardId) {
+  api.deleteCard(cardId).then(() => {
+    const cardElement = document.getElementById(cardId);
+    cardElement.remove();
+  });
+}*/
 
 function handleOverlayClick(event) {
   if (event.target.classList.contains("popup__overlay")) {

@@ -4,8 +4,8 @@ export default class Card {
   constructor(
     cardData,
     templateSelector,
-    handleOpenImage,
     currentUser,
+    handleCardLike,
     handleCardDelete
   ) {
     this._title = cardData.name;
@@ -14,16 +14,17 @@ export default class Card {
     this._cardId = cardData._id;
     this._templateSelector = templateSelector;
     this._element = this._getTemplate();
+    this._element.id = this._cardId;
     this._cardImage = this._element.querySelector(".card__photo");
     this._cardTitle = this._element.querySelector(".card__info-name");
     this._likeButton = this._element.querySelector(".card__like-button");
     this._counterLikes = this._element.querySelector(".card__likes");
     this._bindListeners();
-    this._handleOpenImage = handleOpenImage;
     this._currentUser = currentUser;
-    this._ownerId = "39689808-444a-43ae-b51c-8f177d6060a9";
-    this._updateLikeStatus();
+    this._handleCardLike = handleCardLike;
     this._handleCardDelete = handleCardDelete;
+    this._ownerId = currentUser;
+    this._updateLikeStatus();
   }
 
   _getTemplate() {
@@ -49,15 +50,7 @@ export default class Card {
   }
 
   _toggleLike(likeStatus) {
-    api
-      .likeCard(this._cardId, likeStatus)
-      .then((data) => {
-        this._likes = data.likes;
-        this._updateLikeStatus();
-      })
-      .catch((error) =>
-        console.error("Error: no se puede enviar el me gusta", error)
-      );
+    this._handleCardLike(this._cardId, likeStatus);
   }
 
   _handleDelete() {
@@ -100,11 +93,6 @@ export default class Card {
     this._cardImage.src = this._link;
     this._cardImage.alt = this._title;
     this._updateLikeStatus();
-    if (this._currentUser === this._ownerId) {
-      const trashIcon = document.createElement("div");
-      trashIcon.classList.add(".card__delete-button");
-      this._element.insertAdjacentElement("afterbegin", trashIcon);
-    }
     return this._element;
   }
 }
