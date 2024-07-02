@@ -10,7 +10,7 @@ export default class Card {
   ) {
     this._title = cardData.name;
     this._link = cardData.link;
-    this._likes = cardData.likes || [];
+    this._likes = Array.isArray(cardData.likes) ? cardData.likes : [];
     this._cardId = cardData._id;
     this._templateSelector = templateSelector;
     this._element = this._getTemplate();
@@ -19,11 +19,11 @@ export default class Card {
     this._cardTitle = this._element.querySelector(".card__info-name");
     this._likeButton = this._element.querySelector(".card__like-button");
     this._counterLikes = this._element.querySelector(".card__likes");
-    this._bindListeners();
     this._currentUser = currentUser;
     this._handleCardLike = handleCardLike;
     this._handleCardDelete = handleCardDelete;
-    this._ownerId = currentUser;
+    this._ownerId = cardData.owner._id;
+    this._bindListeners();
     this._updateLikeStatus();
   }
 
@@ -50,7 +50,17 @@ export default class Card {
   }
 
   _toggleLike(likeStatus) {
-    this._handleCardLike(this._cardId, likeStatus);
+    this._handleCardLike(this._cardId, likeStatus)
+      .then((response) => {
+        if (!Array.isArray(response.likes)) {
+          throw new Error("Invalid updated likes: not an array");
+        }
+        this._likes = response.likes;
+        this._updateLikeStatus();
+      })
+      .catch((err) => {
+        console.error(`Error toggling like: ${err}`);
+      });
   }
 
   _handleDelete() {
@@ -83,8 +93,15 @@ export default class Card {
   }
 
   _updateLikeStatus() {
+    if (!Array.isArray(this._likes)) {
+      return;
+    }
     const isLiked = this._likes.some((like) => like._id === this._currentUser);
-    this._likeButton.classList.toggle("card__like-button_active", isLiked);
+    if (isLiked) {
+      this._likeButton.classList.add("card__like-button_active");
+    } else {
+      this._likeButton.classList.remove("card__like-button_active");
+    }
     this._counterLikes.textContent = this._likes.length;
   }
 

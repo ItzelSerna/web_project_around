@@ -55,7 +55,7 @@ class Api {
   }
 
   likeCard(cardId, isLiked) {
-    const method = isLiked ? "DELETE" : "PUT";
+    const method = isLiked ? "PUT" : "DELETE";
     return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
       method: method,
       headers: this.headers,
@@ -64,7 +64,9 @@ class Api {
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         return res.json();
       })
-      .catch((error) => console.error("Error: can't apply like", error));
+      .catch((error) => {
+        console.error("Error: can't apply like", error);
+      });
   }
 
   deleteCard(id) {
@@ -96,6 +98,6 @@ class Api {
   }
 }
 
-export const api = new Api("https://around.nomoreparties.co/v1/web_es_12/", {
+export const api = new Api("https://around.nomoreparties.co/v1/web_es_12", {
   authorization: "39689808-444a-43ae-b51c-8f177d6060a9",
 });

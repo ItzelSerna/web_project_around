@@ -4,7 +4,6 @@ import FormValidator from "./scripts/FormValidator.js";
 import Section from "./scripts/Section.js";
 import Popup from "./scripts/Popup.js";
 import PopupWithAvatar from "./scripts/PopupWithAvatar.js";
-import PopupWithConfirmation from "./scripts/PopupWithConfirmation.js";
 import PopupWithForm from "./scripts/PopupWithForm.js";
 import PopupWithImage from "./scripts/PopupWithImage.js";
 import { api } from "./utils/Api.js";
@@ -30,11 +29,13 @@ const buttonSaveAvatar = document.querySelector("#popup-avatar__button");
 const buttonSaveProfile = document.querySelector("#popup-profile__button");
 const buttonSaveCard = document.querySelector("#popup-card__button");
 
+let currentUser;
+
 api.getUserInfo().then((userData) => {
   profileNameElement.textContent = userData.name;
   profileAboutElement.textContent = userData.about;
   imageProfile.src = userData.avatar;
-  const ownerId = userData._id;
+  currentUser = userData._id;
 
   api.getInitialCards().then((cards) => {
     const section = new Section(
@@ -44,9 +45,9 @@ api.getUserInfo().then((userData) => {
           const card = new Card(
             item,
             ".template-card",
-            ownerId,
-            handleCardLike
-            //handleCardDelete
+            currentUser,
+            likeCard,
+            handleCardDelete
           );
           const cardElement = card.generateCard();
           section.addItem(cardElement);
@@ -79,30 +80,6 @@ function handleProfileFormSubmit(evt) {
   });
 }
 
-api.getUserInfo().then((userData) => {
-  const ownerId = userData._id;
-  api.getInitialCards().then((cards) => {
-    const section = new Section(
-      {
-        items: cards,
-        renderer: (item) => {
-          const card = new Card(
-            item,
-            ".template-card",
-            ownerId,
-            handleCardLike
-          );
-          const cardElement = card.generateCard();
-          section.addItem(cardElement);
-        },
-      },
-      cardArea
-    );
-
-    section.render();
-  });
-});
-
 const editPopup = new Popup(".popup");
 
 const addImagePopup = new PopupWithForm(
@@ -133,7 +110,13 @@ function handleAddCardSubmit(evt) {
   buttonSaveCard.textContent = "Saving...";
   if (titleInput.value && imageInput.value) {
     api.getNewCard(titleInput.value, imageInput.value).then((newCard) => {
-      const card = new Card(newCard, ".template-card");
+      const card = new Card(
+        newCard,
+        ".template-card",
+        currentUser,
+        likeCard,
+        handleCardDelete
+      );
       const newCardElement = card.generateCard();
       cardArea.prepend(newCardElement);
       titleInput.value = "";
@@ -155,26 +138,23 @@ function handleAvatarFormSubmit(evt) {
   });
 }
 
-function handleCardLike(cardId, isLiked) {
-  api.likeCard(cardId, isLiked).then((data) => {
-    const cardElement = document.getElementById(cardId);
-    if (cardElement) {
-      const likeCountElement = cardElement.querySelector(".card__likes");
-      const likeButton = cardElement.querySelector(".card__like-button");
-      likeCountElement.textContent = data.likes.length;
-      likeButton.classList.toggle("card__like-button_active", isLiked);
-    } else {
-      console.error(`Card with id ${cardId} not found`);
-    }
-  });
+function likeCard(cardId, isLiked) {
+  return api
+    .likeCard(cardId, isLiked)
+    .then((updatedCard) => {
+      return updatedCard;
+    })
+    .catch((err) => {
+      throw err;
+    });
 }
 
-/*function handleCardDelete(cardId) {
+function handleCardDelete(cardId) {
   api.deleteCard(cardId).then(() => {
     const cardElement = document.getElementById(cardId);
     cardElement.remove();
   });
-}*/
+}
 
 function handleOverlayClick(event) {
   if (event.target.classList.contains("popup__overlay")) {
