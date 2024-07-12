@@ -21,6 +21,7 @@
   height: 282px;
   margin: 0;
   cursor: pointer;
+  object-fit: cover;
 }
 
 .card__info {

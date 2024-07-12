@@ -18,6 +18,19 @@
   .header {
     max-width: 320px;
     margin: 26px 0 0 27px;
+    padding-bottom: 20px;
+  }
+  .header__logo {
+    max-width: 126px;
+    max-height: 24px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .header {
+    max-width: 700px;
+    margin: 26px 0 0 27px;
+    margin-top: 45px;
   }
   .header__logo {
     max-width: 126px;

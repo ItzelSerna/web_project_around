@@ -1,9 +1,9 @@
 import Popup from "./Popup";
 
 export default class PopupWithAvatar extends Popup {
-  constructor(popupSelector, { handleformAvatar }) {
+  constructor(popupSelector, { handleFormAvatar }) {
     super(popupSelector);
-    this.handleformAvatar = handleformAvatar;
+    this.handleFormAvatar = handleFormAvatar;
     this._buttonAvatar = this.popupSelector.querySelector(
       "#popup-avatar__close"
     );

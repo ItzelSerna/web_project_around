@@ -32,10 +32,10 @@ const buttonSaveCard = document.querySelector("#popup-card__button");
 let currentUser;
 
 api.getUserInfo().then((userData) => {
-  profileNameElement.textContent = userData.name;
-  profileAboutElement.textContent = userData.about;
-  imageProfile.src = userData.avatar;
-  currentUser = userData._id;
+  profileNameElement.textContent = userData?.name;
+  profileAboutElement.textContent = userData?.about;
+  imageProfile.src = userData?.avatar;
+  currentUser = userData?._id;
 
   api.getInitialCards().then((cards) => {
     const section = new Section(
@@ -62,8 +62,8 @@ api.getUserInfo().then((userData) => {
 
 function setUserInfo() {
   api.getUserInfo().then((userData) => {
-    nameInput.value = userData.name;
-    aboutInput.value = userData.about;
+    nameInput.value = userData?.name;
+    aboutInput.value = userData?.about;
   });
 }
 
@@ -72,12 +72,19 @@ function handleProfileFormSubmit(evt) {
   const newName = nameInput.value;
   const newAbout = aboutInput.value;
   buttonSaveProfile.textContent = "Saving...";
-  api.modifyUsersInfo(newName, newAbout).then((data) => {
-    profileNameElement.textContent = data.name;
-    profileAboutElement.textContent = data.about;
-    editProfilePopup.close();
-    buttonSaveProfile.textContent = "Save";
-  });
+  api
+    .modifyUsersInfo(newName, newAbout)
+    .then((data) => {
+      profileNameElement.textContent = data?.name;
+      profileAboutElement.textContent = data?.about;
+      editProfilePopup.close();
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+    .finally(() => {
+      buttonSaveProfile.textContent = "Save";
+    });
 }
 
 const editPopup = new Popup(".popup");
@@ -92,7 +99,7 @@ const editProfilePopup = new PopupWithForm(".popup", handleProfileFormSubmit);
 const imagePopup = new PopupWithImage("#popup_image-open");
 
 const editAvatarPopup = new PopupWithAvatar("#popup-avatar", {
-  handleformAvatar: handleAvatarFormSubmit,
+  handleFormAvatar: handleAvatarFormSubmit,
 });
 
 const overlayEdit = document.querySelector("#popup-overlay-edit");
@@ -132,7 +139,7 @@ function handleAvatarFormSubmit(evt) {
   const newAvatarUrl = formElementAvatar.querySelector(".popup__input").value;
   buttonSaveAvatar.textContent = "Saving...";
   api.resetAvatar(newAvatarUrl).then((data) => {
-    imageProfile.src = data.avatar;
+    imageProfile.src = data?.avatar;
     editAvatarPopup.close();
     buttonSaveAvatar.textContent = "Save";
   });
